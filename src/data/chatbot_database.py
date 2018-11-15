@@ -31,12 +31,36 @@ def find_parent(pid):
         print("find parent", e)
         return False
 
+def find_existing_score(pid):
+    try:
+        sql = "SELECT score FROM parent_reply WHERE parent_id = '{}' LIMIT 1".format(pid)
+        c.execute(sql)
+        result = c.fetchone()
+        if return != None:
+            return[0]
+        else:
+            return False
+    except Exception as e:
+        print("find parent", e)
+        return False
+
+def acceptable(data):
+    if len(data.split(' ')) > 50 or len(data) < 1:
+        return False
+    elif len(data) > 1000:
+        return False
+    elif data = '[deleted]' or data = '[removed]':
+        return False
+    else:
+        return True
+
 if __name__ == '__main__':
     create_table()
     row_counter = 0
     paired_rows = 0
 
-    with open('/c/Users/Andries van der Walt/Documents/data_science/chatbot/data/processed/{}/RC_{}'.format(timeframe.split('-')[0], timeframe), buffer=1000) as f:
+    with open('/c/Users/Andries van der Walt/Documents/data_science/chatbot/data/processed/{}/RC_{}'\
+    .format(timeframe.split('-')[0], timeframe), buffering=1000) as f:
         for row in f:
             row_counter += 1
             row = json.loads(row)
@@ -45,5 +69,11 @@ if __name__ == '__main__':
             created_utc = row['created_utc']
             score = row['score']
             subreddit = row['subreddit']
-
             parent_data = find_parent(parent_id)
+
+            
+
+            if score >= 2:
+                existing_comment_score = find_existing_score(parent_id)
+                if existing_comment_score:
+                    if score > existing_comment_score:
