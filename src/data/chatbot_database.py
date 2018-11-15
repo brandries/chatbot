@@ -5,6 +5,8 @@ from datetime import datetime
 
 timeframe = '2015-01'
 sql_transaction = []
+start_row = 0
+cleanup = 1000000
 
 connection = sqlite3.connect('{}.db'.format(timeframe))
 c = connection.cursor()
@@ -49,7 +51,9 @@ def acceptable(data):
         return False
     elif len(data) > 1000:
         return False
-    elif data == '[deleted]' or data == '[removed]':
+    elif data == '[deleted]':
+        return False
+    elif data == '[removed]':
         return False
     else:
         return True
@@ -123,3 +127,13 @@ if __name__ == '__main__':
 
             if row_counter % 100000 == 0:
                 print('Total rows read: {}, Paired rows: {}, Time: {}'.format(row_counter, paired_rows, str(datetime.now())))
+
+
+            if row_counter > start_row:
+                if row_counter % cleanup == 0:
+                    print("Cleanin up!")
+                    sql = "DELETE FROM parent_reply WHERE parent IS NULL"
+                    c.execute(sql)
+                    connection.commit()
+                    c.execute("VACUUM")
+                    connection.commit()
