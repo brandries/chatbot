@@ -16,19 +16,19 @@ for timeframe in timeframes:
         last_unix = df.tail(1)['unix'].values[0]
         cur_length = len(df)
         if not test_done:
-            with open('test.from', 'a', encoding='utf8') as f:
+            with open('../../data/processed/test.from', 'a', encoding='utf8') as f:
                 for content in df['parent'].values:
                     f.write(content+'\n')
-            with open('test.to', 'a', encoding='utf8') as f:
+            with open('../../data/processed/test.to', 'a', encoding='utf8') as f:
                 for content in df['comment'].values:
                     f.write(content+'\n')
             test_done = True
 
         else:
-            with open('train.from', 'a', encoding='utf8') as f:
+            with open('../../data/processed/train.from', 'a', encoding='utf8') as f:
                 for content in df['parent'].values:
                     f.write(content+'\n')
-            with open('train.to', 'a', encoding='utf8') as f:
+            with open('../../data/processed/train.to', 'a', encoding='utf8') as f:
                 for content in df['comment'].values:
                     f.write(content+'\n')
 
