@@ -49,7 +49,7 @@ def acceptable(data):
         return False
     elif len(data) > 1000:
         return False
-    elif data = '[deleted]' or data = '[removed]':
+    elif data == '[deleted]' or data == '[removed]':
         return False
     else:
         return True
@@ -105,6 +105,7 @@ if __name__ == '__main__':
             created_utc = row['created_utc']
             score = row['score']
             subreddit = row['subreddit']
+            comment_id = row['name']
             parent_data = find_parent(parent_id)
 
             if score >= 2:
@@ -116,5 +117,9 @@ if __name__ == '__main__':
                     else:
                         if parent_data:
                             sql_insert_has_parent(comment_id, parent_id, parent_data, body, subreddit, created_utc, score)
+                            paired_rows += 1
                         else:
                             sql_insert_no_parent(comment_id, parent_id, body, subreddit, created_utc, score)
+
+            if row_counter % 100000 == 0:
+                print('Total rows read: {}, Paired rows: {}, Time: {}'.format(row_counter, paired_rows, str(datetime.now())))
