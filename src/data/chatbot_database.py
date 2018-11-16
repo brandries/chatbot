@@ -89,18 +89,16 @@ def find_existing_score(pid):
         #print(str(e))
         return False
 
+
 if __name__ == '__main__':
     create_table()
     row_counter = 0
     paired_rows = 0
 
-    #with open('J:/chatdata/reddit_data/{}/RC_{}'.format(timeframe.split('-')[0],timeframe), buffering=1000) as f:
-    with open('/home/paperspace/reddit_comment_dumps/RC_{}'.format(timeframe), buffering=1000) as f:
+    with open('./{}/RC_{}'\
+    .format(timeframe.split('-')[0], timeframe), buffering=1000) as f:
         for row in f:
-            #print(row)
-            #time.sleep(555)
             row_counter += 1
-
             if row_counter > start_row:
                 try:
                     row = json.loads(row)
@@ -108,12 +106,9 @@ if __name__ == '__main__':
                     body = format_data(row['body'])
                     created_utc = row['created_utc']
                     score = row['score']
-
                     comment_id = row['id']
-
                     subreddit = row['subreddit']
                     parent_data = find_parent(parent_id)
-
                     existing_comment_score = find_existing_score(parent_id)
                     if existing_comment_score:
                         if score > existing_comment_score:
@@ -132,7 +127,8 @@ if __name__ == '__main__':
                     print(str(e))
 
             if row_counter % 100000 == 0:
-                print('Total Rows Read: {}, Paired Rows: {}, Time: {}'.format(row_counter, paired_rows, str(datetime.now())))
+                print('Total rows read: {}, Paired rows: {}, Time: {}'.format(row_counter, paired_rows, str(datetime.now())))
+
 
             if row_counter > start_row:
                 if row_counter % cleanup == 0:
